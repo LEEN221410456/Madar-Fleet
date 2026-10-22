@@ -1,0 +1,39 @@
+
+> madar-fleet@1.0.0 test:coverage
+> vitest run --coverage
+
+
+ RUN  v3.2.7 <project>
+      Coverage enabled with v8
+
+ ✓ src/lib/fleet.test.js (60 tests) 17ms
+ ✓ src/App.test.jsx (21 tests) 9837ms
+   ✓ Madar Fleet user journeys > creates a vehicle and updates the registry  1299ms
+   ✓ Madar Fleet user journeys > validates missing fields and focuses the first error  474ms
+   ✓ Madar Fleet user journeys > blocks duplicate registrations  1707ms
+   ✓ Madar Fleet user journeys > edits a record and saves the change  1108ms
+   ✓ Madar Fleet user journeys > requires a driver when assigning a vehicle  1006ms
+   ✓ Madar Fleet user journeys > deletes a vehicle and restores it using undo  343ms
+   ✓ Madar Fleet user journeys > searches and combines branch and status filters  350ms
+   ✓ Madar Fleet user journeys > shows a helpful empty search result  310ms
+   ✓ Madar Fleet user journeys > cancels unsaved changes  1355ms
+
+ Test Files  2 passed (2)
+      Tests  81 passed (81)
+   Start at  16:55:51
+   Duration  11.06s (transform 122ms, setup 332ms, collect 254ms, tests 9.85s, environment 802ms, prepare 120ms)
+
+ % Coverage report from v8
+------------------|---------|----------|---------|---------|--------------------
+File              | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s  
+------------------|---------|----------|---------|---------|--------------------
+All files         |   96.76 |    90.62 |    80.7 |   96.76 |                    
+ src              |    94.9 |    91.03 |   68.57 |    94.9 |                    
+  App.jsx         |    94.9 |    91.03 |   68.57 |    94.9 | ...761,766,863-908 
+ src/components   |   99.48 |    91.48 |     100 |   99.48 |                    
+  Modal.jsx       |   97.01 |    78.57 |     100 |   97.01 | 22-23              
+  VehicleArt.jsx  |     100 |       50 |     100 |     100 | 8                  
+  VehicleForm.jsx |     100 |      100 |     100 |     100 |                    
+ src/lib          |     100 |    89.58 |     100 |     100 |                    
+  fleet.js        |     100 |    89.58 |     100 |     100 | ...,75,134,161,180 
+------------------|---------|----------|---------|---------|--------------------
