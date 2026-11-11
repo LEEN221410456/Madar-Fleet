@@ -1,103 +1,80 @@
 # Madar Fleet
 
-**Your fleet, in focus.** A React frontend for managing company vehicles in a Saudi business setting.
+**Your fleet, in focus.** A vehicle asset management application for Saudi businesses, with a React frontend and a Spring Boot REST API backed by H2.
 
-SE411 · Fall 2026–27 · Part 1
+SE411 · Fall 2026–27 · Parts 1 and 2
 
 | Team member | Student ID |
 | --- | --- |
 | Leen Alshaya | 221410456 |
 | Layal Alhashim | 220511246 |
 
-![Madar Fleet overview](docs/screenshots/overview-desktop.png)
+![Madar Fleet overview from Part 1](frontend/docs/part-1-original/screenshots/overview-desktop.png)
 
-## Start the application
+## Repository structure
 
-Install Node.js **22.12+** (Node 24 LTS is also suitable) and npm. From this folder:
+```text
+frontend/                     React, Vite, frontend tests and bundled fonts
+  docs/CONNECTED-VERIFICATION.md
+  docs/part-1-original/        Original Part 1 reports, evidence and screenshots
+backend/                      Spring Boot Maven project; open this in NetBeans
+  src/main/                   REST API, vehicle rules and H2 persistence
+  src/test/                   JUnit, Mockito and HTTP integration tests
+  docs/API.md                 API routes, examples and validation
+  docs/VERIFICATION.md
+.github/workflows/ci.yml       Frontend and backend checks
+```
+
+The original standalone Part 1 submission remains available at the [`part-1` tag](https://github.com/LEEN221410456/Madar-Fleet/tree/part-1). The `main` branch contains the connected application. Historical Part 1 reports describe the original in-memory frontend; current setup instructions are below.
+
+## Run locally
+
+Install Node.js **22.12 or newer**, **JDK 17 or newer**, and **Maven 3.9 or newer** (NetBeans' bundled Maven also works). The first dependency installation needs internet access.
+
+Clone the repository and start the backend:
 
 ```sh
+git clone https://github.com/LEEN221410456/Madar-Fleet.git
+cd Madar-Fleet/backend
+mvn spring-boot:run
+```
+
+In a second terminal, from the repository root:
+
+```sh
+cd frontend
 npm ci
 npm run dev
 ```
 
-Open the local URL printed in the terminal. Stop the server with Ctrl+C.
+Open the URL printed by Vite, normally **http://127.0.0.1:5173**. The header shows **Connected to Spring** when the API responds. Vite forwards `/api` requests to **http://127.0.0.1:8080**. No API key or separate database installation is needed.
+
+For NetBeans, open the **`backend` folder containing `pom.xml`** as an existing Maven project and choose **Run**. Run React separately with the commands above. See the [frontend guide](frontend/README.md) and [backend guide](backend/README.md) for port overrides and troubleshooting.
+
+The backend creates a local file database in `backend/data/` when launched from that folder and seeds eight fictional vehicles on an empty database. Changes survive a restart when the same database path is used. Local databases and generated build files are ignored by Git.
+
+## Features
+
+- Fleet overview with whole-fleet totals, availability, service attention and asset values in SAR.
+- Create, find by asset ID, update and paginate vehicle records through the REST API.
+- Search, branch/status filters, sorting, service views and CSV export across matching pages.
+- Server-backed removal and Undo, responsive vehicle cards and accessible forms.
+
+This repository supplies a local application. A production frontend build needs a host that serves the frontend and routes `/api` to the backend; Vite's development proxy is configured for `npm run dev`.
+
+## Verify
+
+From the repository root:
 
 ```sh
-npm test                 # 81 unit and interaction checks
-npm run test:coverage    # includes coverage report
-npm run build           # create dist/
-npm run preview         # serve the production build
+npm --prefix frontend ci
+npm --prefix frontend test
+npm --prefix frontend run build
+mvn -f backend/pom.xml clean verify
 ```
 
-The lockfile pins the installed dependency versions. No environment variables, API keys, database, or backend service are required. Fonts, icons, and the vehicle illustration are included locally; the app makes no external runtime requests.
+GitHub Actions runs frontend checks with Node 24 and backend checks with Java 17 on pushes and pull requests. The backend HTTP integration tests use a temporary in-memory database. See [current repository verification](docs/VERIFICATION.md) for locally executed results.
 
-## What you can do
+## Credits and project context
 
-- **Overview:** see total vehicles, availability, service attention, active asset value, and utilization. Select a summary card to open the related view.
-- **Vehicles:** add, view, edit, assign, and delete individual company vehicles. Confirm deletion and immediately undo it if needed.
-- **Search and filter:** combine search, status, and branch; sort by asset ID, vehicle name, mileage, or service date.
-- **Service:** see vehicles in maintenance or with a service date due within 14 days, including overdue vehicles.
-- **Export:** download the current filtered view as a UTF-8 CSV.
-- **About:** see both team members and their exact student IDs.
-- **Quick guide:** learn shortcuts and the session data behavior.
-
-The interface uses a quiet light background, violet accents, an original vector vehicle illustration, compact navigation, and an edit drawer. On phones, records become cards with direct edit/delete controls.
-
-## Part 1 data model
-
-The only asset category is **company vehicles**. Eight fictional records are created by `src/data/vehicles.js` and kept in an array of objects in React state. Adding, editing, and deleting change that collection immediately.
-
-**Refreshing the page restores the sample fleet.** There is deliberately no database, localStorage, sessionStorage, or backend. CSV export keeps a separate copy; CSV import is not implemented. Each browser tab has its own independent session. This follows the assignment’s collection-of-objects requirement.
-
-Saudi context: branches in Riyadh, Jeddah, Dammam, and Al Khobar; asset values in SAR; mileage in kilometres. All records, drivers, registration labels, and amounts are fictional. The interface is English. Arabic text can be entered, but an Arabic interface and full RTL localization are outside this submission.
-
-## Project structure
-
-```text
-src/
-  App.jsx                     Navigation, views, state and CRUD handlers
-  App.test.jsx                User interaction tests
-  main.jsx                    React entry point
-  styles.css                  Responsive visual system
-  components/
-    Modal.jsx                 Accessible dialog and focus management
-    VehicleForm.jsx           Add/edit drawer and field errors
-    VehicleArt.jsx            Original SVG vehicle illustration
-  data/vehicles.js             Fictional object collection
-  lib/fleet.js                 Validation, filtering, service rules, CSV
-  lib/fleet.test.js            Domain behavior tests
-  test/setup.js                Testing Library setup
-public/
-  favicon.svg
-  fonts/                      Local fonts and OFL licenses
-docs/
-  PROJECT-REPORT.md            Architecture, stack, features, data dictionary
-  PROJECT-REPORT.pdf           Formatted submission report
-  REQUIREMENTS.md              Assignment traceability and acceptance criteria
-  TEST-REPORT.md               Actual execution results and browser checks
-  DEMO-GUIDE.md                Step-by-step demonstration
-  AI-USAGE.md                  Transparent AI assistance record
-  GITHUB-SUBMISSION.md         Public repository upload instructions
-  evidence/                   Test/build logs and coverage summary
-  screenshots/                Screens captured from the running application
-```
-
-## Verification
-
-The automated suite covers validation, duplicate registrations, CRUD interactions, assignment rules, filters, service boundaries, empty states, keyboard navigation, CSV quoting/formula protection, and refresh behavior. See [test report](docs/TEST-REPORT.md) for the executed results and limitations.
-
-A GitHub Actions workflow repeats `npm ci`, `npm test`, and `npm run build` on pushes and pull requests. It requires a repository that permits Actions; a cloud run is not claimed before uploading.
-
-## Submission
-
-Upload **this folder’s contents** to a **public GitHub repository**. Follow [GitHub submission steps](docs/GITHUB-SUBMISSION.md). Do not upload `node_modules/`, `.git/`, `coverage/`, or local runtime files. One student submits the public repository URL.
-
-**Team-size check:** the brief specifies three to four students; only the two supplied members are listed. Confirm approval for a two-person team or add the remaining actual members before submission. No identities or contribution allocations have been invented.
-
-## Next phase
-
-Part 2 calls for a manually coded backend. The pure domain functions and explicit record shape provide a starting point, but no server, database, login, or backend implementation is included here.
-
-## Credits
-
-AI assistance: OpenAI Codex, used for requirement interpretation, design, frontend implementation, tests, and documentation. See [AI usage](docs/AI-USAGE.md). Icons: Lucide (ISC). Fonts: DM Sans and Manrope (SIL Open Font License; license files are bundled). Logo and vehicle illustration: original SVG created for this project. React and other dependencies retain their respective licenses.
+The original Git history and Part 1 documents are preserved. AI assistance was used for the frontend, backend, tests and documentation; see [the original AI usage record](frontend/docs/part-1-original/AI-USAGE.md) and [the backend disclosure](backend/README.md). Third-party frontend licenses are described in [the notices](frontend/THIRD-PARTY-NOTICES.md).

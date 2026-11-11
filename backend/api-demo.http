@@ -1,0 +1,63 @@
+@base = http://127.0.0.1:8080
+# Replace this with the ID returned by POST if the database is not fresh.
+@createdId = MF-009
+
+### List page 1 (API index 0)
+GET {{base}}/api/vehicles?page=0&size=3
+
+### List page 2 (API index 1)
+GET {{base}}/api/vehicles?page=1&size=3
+
+### Look up a seeded vehicle
+GET {{base}}/api/vehicles/MF-001
+
+### Create a vehicle; choose a different plate if repeating the demo
+POST {{base}}/api/vehicles
+Content-Type: application/json
+
+{
+  "make": "Mazda",
+  "model": "CX-5",
+  "year": 2025,
+  "plate": "QA 4100",
+  "branch": "Riyadh",
+  "status": "Available",
+  "mileage": 17500,
+  "value": 105000.50,
+  "notes": "Demonstration vehicle"
+}
+
+### Look up the created vehicle
+GET {{base}}/api/vehicles/{{createdId}}
+
+### Update it without changing the ID
+PUT {{base}}/api/vehicles/{{createdId}}
+Content-Type: application/json
+
+{
+  "make": "Mazda",
+  "model": "CX-5",
+  "year": 2025,
+  "plate": "QA 4100",
+  "branch": "Riyadh",
+  "status": "Assigned",
+  "driver": "Demo Driver",
+  "mileage": 18100,
+  "value": 105000.50,
+  "notes": "Updated during the demo"
+}
+
+### Missing vehicle
+GET {{base}}/api/vehicles/MF-999
+
+### Whole fleet dashboard
+GET {{base}}/api/vehicles/summary
+
+### Filter and page the registry
+GET {{base}}/api/vehicles?branch=Riyadh&status=Available&size=3
+
+### Remove the demonstration record from the registry
+DELETE {{base}}/api/vehicles/{{createdId}}
+
+### Restore the demonstration record
+POST {{base}}/api/vehicles/{{createdId}}/restore
